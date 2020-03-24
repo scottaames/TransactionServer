@@ -20,7 +20,7 @@ public class Message implements Serializable {
         Write
     }
     
-    int type;
+    MessageTypes type;
     
     /**
      * Contains the content that is specific to a certain message type
@@ -28,20 +28,19 @@ public class Message implements Serializable {
     
     Object content;
 
-    public Message(int type, Object content) {
+    public Message(MessageTypes type, Object content) {
         this.type = type;
         this.content = content;
     }
-
-    public Message() {
-    }
     
-    // getter and setter methods for message type
-    public void setType(int type) {
+    /**
+     * getter and setter methods for message type
+     */ 
+    public void setType(MessageTypes type) {
         this.type = type;
     }
 
-    public int getType() {
+    public MessageTypes getType() {
         return type;
     }
 
