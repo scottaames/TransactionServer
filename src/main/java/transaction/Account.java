@@ -12,9 +12,6 @@ package transaction;
 public class Account {
     private int balance;
     private int accountId;
-    private int lockTransactionId;
-    private int locktype;
-    private int numReadLocks;
 
     public Account(int accountId, int balance) {
         this.balance = balance;
@@ -24,6 +21,7 @@ public class Account {
     public int getBalance() {
         return this.balance;
     }
+    
     public void setBalance(int newBalance) {
         this.balance = newBalance;
     }
