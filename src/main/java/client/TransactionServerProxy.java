@@ -68,8 +68,8 @@ public class TransactionServerProxy extends Thread {
             // Print the message to the user 
             
 
-        } catch (IOException ex) {
-            Logger.getLogger(TransactionServer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | ClassNotFoundException e ) {
+            Logger.getLogger(TransactionServer.class.getName()).log(Level.SEVERE, null, e);
         }
         
         loop: while(true){

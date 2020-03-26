@@ -41,29 +41,6 @@ public class TransactionClient extends Thread {
                 proxy.run(); 
 
                 proxySocket.close(); 
-                /*
-                Socket serverProxy = new Socket( "127.0.0.1", serverPort ); 
-                
-                //Setup Object Streams
-                ObjectOutputStream writeToServer = new ObjectOutputStream(serverProxy.getOutputStream());
-                ObjectInputStream readFromServer = new ObjectInputStream(serverProxy.getInputStream());
-
-               
-                Message message;
-                
-                //Open Transactiona
-                message = new Message(MessageTypes.OpenTransaction, null);
-                
-                Transaction readObject;
-                writeToServer.writeObject(message);
-                
-                System.out.print( readFromServer.readObject() ); 
-                System.out.println( " " + i ); 
-
-               
-                transactionId = (Integer) readFromServer.readObject();
-                System.out.println("[Client][Transaction " + transactionId + "]: Transaction opened");
-                */ 
                 
             } catch (Exception e) {
                 
