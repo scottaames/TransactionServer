@@ -28,7 +28,7 @@ public class Account {
         this.balance = newBalance;
     }
 
-    public int getAccountId() {
+    public int getAccountID() {
         return this.accountId;
     } 
 }

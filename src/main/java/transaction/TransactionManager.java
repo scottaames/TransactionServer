@@ -6,6 +6,7 @@
 package transaction;
 
 import java.io.Serializable;
+import java.net.Socket;
 
 /**
  *
@@ -14,4 +15,18 @@ import java.io.Serializable;
 public class TransactionManager {
     
     
+    
+    public TransactionManager() {
+        
+        
+    }
+    
+    public void addTransaction( Socket clientConnection ) {
+        
+        // Create a transaction object 
+        Transaction transaction = new Transaction( clientConnection ); 
+        
+        // Run transaction 
+        transaction.test(); 
+    }
 }

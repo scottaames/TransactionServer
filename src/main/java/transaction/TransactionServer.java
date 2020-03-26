@@ -11,28 +11,51 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import Logger.OutputLogger; 
+
 /**
  *
  * @author scott
  */
 public class TransactionServer {
     
+    // The server port that we want to use
     public final int SERVER_PORT = 8080;
+    
+    // The IP address of local host that we want all of our nodes to run on 
     public final String SERVER_IP = "127.0.0.1";
+    
     public final int NUM_ACCOUNTS = 20;
     public ServerSocket serverSocket;
+    
+    // The managers of the components of this project 
     public TransactionManager transactionManager;
     public AccountManager accountManager;
     public LockManager lockManager;
+ 
+    private OutputLogger logger = new OutputLogger( true ); 
+    
     public int numTransactionsToRun;
     
-    
+    /**
+     * Constructor method 
+     * 
+     * @param accountBalances The balance that we want all the accounts created to start with 
+     */
     public TransactionServer(int accountBalances) {
+        
+        // Create an account manager object that all start with the same balance
         accountManager = new AccountManager(NUM_ACCOUNTS, accountBalances);
+        
+        // Initialize our lock manager 
         lockManager = new LockManager();
+        
+        // Initialize our transaction manager
         transactionManager = new TransactionManager();
         
         try {
+            
+            // Create a serversocket on our chosen port 
             serverSocket = new ServerSocket(SERVER_PORT);
         } catch (Exception e) {
             Logger.getLogger(TransactionServer.class.getName()).log(Level.SEVERE, null, e);
@@ -43,14 +66,21 @@ public class TransactionServer {
     // start serving clients in server loop ...
 
         try {
+            
             while(true) {
-                System.out.println("[Transaction Server] Waiting for connections on port "+ SERVER_PORT);
+                
+                // Let the user know that the server is waiting 
+                System.out.println( "[Transaction Server] Waiting for connections on port "+ SERVER_PORT);
                 //Accept incomming connections.
                 Socket connectionToClient  = serverSocket.accept();
+                
                 System.out.println("[Transaction Server] A connection is established.");
+                
                 //Spin off new thread.
-                (new TransactionServerProxy(connectionToClient)).start();
-          }        
+                transactionManager.addTransaction( connectionToClient ); 
+                
+                //(new TransactionServerProxy(connectionToClient)).start();
+            }    
 
         } catch (Exception e) {
             System.err.println(e);
@@ -58,7 +88,11 @@ public class TransactionServer {
     }
      
     public static void main(String[] args) {
+        
+        // Initialize our transaction server with each account starting at 10 dollars
         TransactionServer ts = new TransactionServer(10);
+        
+        // Execute the transaction server
         ts.run();
     }
 }

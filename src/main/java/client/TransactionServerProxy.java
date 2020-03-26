@@ -18,20 +18,23 @@ import transaction.Message;
 import transaction.Transaction;
 import transaction.TransactionServer;
 
+import Logger.OutputLogger; 
+
 /**
  *
  * @author scott
  */
 public class TransactionServerProxy extends Thread {
     Socket client = null;
-    ObjectOutputStream writeToClient = null;
-    ObjectInputStream readFromClient = null;
+    ObjectOutputStream writeToServer = null;
+    ObjectInputStream readFromServer = null;
 
     Message message = null;
     Transaction transaction;
     int transactionId;
     int accountID;
     Object resultObject;
+    OutputLogger logger = new OutputLogger( true ); 
 
     public TransactionServerProxy(Socket client) {
         this.client = client;
@@ -41,8 +44,29 @@ public class TransactionServerProxy extends Thread {
     public void run() {
         try {
             // setting up object streams
-            readFromClient = new ObjectInputStream(client.getInputStream());
-            writeToClient = new ObjectOutputStream(client.getOutputStream());        
+            logger.print( "Connecting input and output to server" ); 
+            readFromServer = new ObjectInputStream(client.getInputStream());
+            writeToServer = new ObjectOutputStream(client.getOutputStream());    
+            
+            // Create our message 
+            logger.print( "Creating message" ); 
+            Message message;
+            //Open Transactiona
+            message = new Message(MessageTypes.OpenTransaction, null);
+            
+            // Send the message to the server 
+            logger.print( "Sending message to server" ); 
+            Transaction readObject;
+            writeToServer.writeObject(message);
+            
+            // Obtain a response from the server 
+            logger.print( "Getting reponse from server" ); 
+            String messageFromServer = (String) readFromServer.readObject(); 
+            
+            System.out.println( messageFromServer ); 
+            
+            // Print the message to the user 
+            
 
         } catch (IOException ex) {
             Logger.getLogger(TransactionServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -52,7 +76,7 @@ public class TransactionServerProxy extends Thread {
                 
             // reading message
             try {
-                message = (Message) readFromClient.readObject();
+                message = (Message) readFromServer.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println("[Transaction Server]: Message could not be read from object stream.");
                 e.printStackTrace();
