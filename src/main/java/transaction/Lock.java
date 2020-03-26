@@ -6,24 +6,23 @@
 package transaction;
 
 import java.util.ArrayList;
-import transaction.LockTypes; 
 
 /**
  *
  * @author scott
  */
-public class Lock {
+public class Lock implements LockTypes {
     private Account account;
     private ArrayList<Integer> lockHolders;
-    private LockTypes lockType;
+    private int lockType;
     
-    public Lock(LockTypes lockType, Account account) {
+    public Lock(int lockType, Account account) {
         this.account = account;
         this.lockHolders = new ArrayList<Integer>();
         this.lockType = lockType;
     }
     
-    public synchronized void acquire(int transactionID, LockTypes aLockType) {
+    public synchronized void acquire(int transactionID, int aLockType) {
         //log message goes here
         try {
             //log message goes here
@@ -38,10 +37,10 @@ public class Lock {
             if ( true /* this transaction not a holder */) {
                 lockHolders.add(transactionID);
             }
-        } else if ( lockHolders.size() == 1 && currentLockType == READ_LOCK && aLockType == WRITE_LOCK) {
+        } else if (lockHolders.size() == 1 && lockType == READ_LOCK && aLockType == WRITE_LOCK) {
             /* this transaction is a holder but needs a more exclusive lock */
             //log message goes here
-            lockType = LockTypes.Write;
+            lockType = WRITE_LOCK;
         }
         else
         {
@@ -56,7 +55,7 @@ public class Lock {
         lockHolders.remove(transactionId);
         if(lockHolders.isEmpty())
         {
-            lockType = LockTypes.None;
+            lockType = EMPTY_LOCK;
         }
         notifyAll();
     }
@@ -70,7 +69,7 @@ public class Lock {
             return false;
         }
         //this transcation has the lockholder, no conflict
-        else if (lockHolders.size() == 1 && lockHolders.contains(transcationId))
+        else if (lockHolders.size() == 1 && lockHolders.contains(transactionId))
         {
             //log message goes here
             return false;
@@ -92,7 +91,7 @@ public class Lock {
 
     public synchronized int getLockType()
     {
-        return currentLockType;
+        return lockType;
     }
 
     public Account getAccount()
@@ -106,8 +105,17 @@ public class Lock {
         switch(lockType)
         {
             case READ_LOCK:
-
+                lockString = "Read Lock";
+                break;
+            case WRITE_LOCK:
+                lockString = "Write Lock";
+                break;
+            case EMPTY_LOCK:
+                lockString = "Empty Lock";
+                break;
+            
         }
+        return lockString;
     }
 
 }
