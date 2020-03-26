@@ -5,13 +5,15 @@
  */
 package transaction;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author scott
  */
-public class AccountManager {
+public class AccountManager implements LockTypes {
     
-    Account accounts[];
+    ArrayList<Account> accounts;
     
     /**
      * Constructor that creates the accounts on the server 
@@ -20,17 +22,28 @@ public class AccountManager {
      * @param balance The balance we want all accounts to start with 
      */
     public AccountManager(int numAccounts, int balance){
-        this.accounts = new Account[numAccounts];
+        this.accounts = new ArrayList<Account>();
         for (int i = 0; i < numAccounts; i++) {
-            this.accounts[i] = new Account(balance, i+ 1);
+            accounts.add(new Account(i + 1, balance));
         }
     }
     
-    public int getAccountBalance(int accountId, int transactionId) {
-        return 0;
+    public ArrayList<Account> getAccounts() {
+        return accounts;
     }
     
-    public void setAccountBalance(int accountID, int newBalance) {
-        
+    public Account getAccount(int accountId) {
+        return accounts.get(accountId);
+    }
+    
+    public int read(int accountId, Transaction transaction) {
+        Account account = getAccount(accountId);
+        (TransactionServer.lockManager).lock(account, transaction, READ_LOCK);
+        return (getAccount(accountId)).getBalance();
+    }
+    
+    public int write(int accountId, Transaction transaction, int balance) {
+        Account account = getAccount(accountId);
+        (TransactionServer.lockManager).lock(account, transaction, WRITE_LOCK);
     }
 }

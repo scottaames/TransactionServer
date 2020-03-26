@@ -11,16 +11,9 @@ import java.io.Serializable;
  *
  * @author scott
  */
-public class Message implements Serializable {
+public class Message implements MessageTypes, Serializable {
     
-    public enum MessageTypes {
-        OpenTransaction,
-        CloseTransaction,
-        Read,
-        Write
-    }
-    
-    MessageTypes type;
+    int type;
     
     /**
      * Contains the content that is specific to a certain message type
@@ -28,7 +21,7 @@ public class Message implements Serializable {
     
     Object content;
 
-    public Message(MessageTypes type, Object content) {
+    public Message(int type, Object content) {
         this.type = type;
         this.content = content;
     }
@@ -36,11 +29,11 @@ public class Message implements Serializable {
     /**
      * getter and setter methods for message type
      */ 
-    public void setType(MessageTypes type) {
+    public void setType(int type) {
         this.type = type;
     }
 
-    public MessageTypes getType() {
+    public int getType() {
         return type;
     }
 
