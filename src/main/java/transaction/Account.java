@@ -16,7 +16,7 @@ public class Account {
     private int locktype;
     private int numReadLocks;
 
-    public Account(int balance, int accountId) {
+    public Account(int accountId, int balance) {
         this.balance = balance;
         this.accountId = accountId;
     }
