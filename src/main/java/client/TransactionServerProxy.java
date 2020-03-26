@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
-import transaction.Message.MessageTypes;
+import transaction.MessageTypes;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +52,7 @@ public class TransactionServerProxy extends Thread {
             logger.print( "Creating message" ); 
             Message message;
             //Open Transactiona
-            message = new Message(MessageTypes.OpenTransaction, null);
+            message = new Message(MessageTypes.OPEN_TRANSACTION, null);
             
             // Send the message to the server 
             logger.print( "Sending message to server" ); 
@@ -72,6 +72,7 @@ public class TransactionServerProxy extends Thread {
             Logger.getLogger(TransactionServer.class.getName()).log(Level.SEVERE, null, e);
         }
         
+        /*
         loop: while(true){
                 
             // reading message
@@ -87,6 +88,6 @@ public class TransactionServerProxy extends Thread {
                 case OpenTransaction:
                     System.out.println("opening transaction.");
             }
-        }
+        } */ 
     }
 }

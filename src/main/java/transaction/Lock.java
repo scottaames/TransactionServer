@@ -6,6 +6,7 @@
 package transaction;
 
 import java.util.ArrayList;
+import transaction.LockTypes; 
 
 /**
  *
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class Lock {
     private Account account;
     private ArrayList<Integer> lockHolders;
-    private int lockType;
+    private LockTypes lockType;
     
     public Lock(LockTypes lockType, Account account) {
         this.account = account;
@@ -22,7 +23,7 @@ public class Lock {
         this.lockType = lockType;
     }
     
-    public synchronized void acquire(int transactionID, int aLockType) {
+    public synchronized void acquire(int transactionID, LockTypes aLockType) {
         //log message goes here
         try {
             //log message goes here

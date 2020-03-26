@@ -4,7 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import transaction.Message;
-import transaction.Message.MessageTypes;
+import transaction.MessageTypes;
 import transaction.Transaction;
 
 /*
@@ -41,6 +41,8 @@ public class TransactionClient extends Thread {
                 proxy.run(); 
 
                 proxySocket.close(); 
+                
+                System.out.println( "Transaction: " + i ); 
                 
             } catch (Exception e) {
                 

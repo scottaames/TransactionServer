@@ -11,27 +11,41 @@ import java.net.Socket;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.ArrayList;
 
 /**
  *
  * @author scott
  */
 public class Transaction implements Serializable {
-        Account account;
-        int transactionId;
-        int amount;
+        int transID; 
+        ArrayList<Lock> locks; 
         Socket client; 
-
-        public Transaction(Account account, int amount, int transactionId, Socket client) {
-            this.account = account;
-            this.amount = amount;
-            this.transactionId = transactionId;
-            this.client = client; 
-        }
         
         public Transaction( Socket client ) {
             
             this.client = client; 
+        }
+        
+        public Transaction( int id ) {
+            
+            this.transID = id; 
+            this.locks = new ArrayList(); 
+        }
+        
+        public int getID() {
+            
+            return this.transID; 
+        }
+        
+        public ArrayList<Lock> getLocks() {
+            
+            return locks; 
+        }
+        
+        public void addLock( Lock lock ) {
+            
+            locks.add( lock ); 
         }
         
         public void test() {
@@ -51,24 +65,17 @@ public class Transaction implements Serializable {
         
         public void write() {
             
-            // 
+            // Read the balance of the account associated with this transaction 
+            
+            // Add/subtract the amount of money that we want to change on this account 
             
         }
         
         public void read() {
             
-            // Transmit the account client 
+            // Get the balance from the account associated with this transaction
+            
+            // Return the balance
         }
 
-        public Account getAccount() {
-            return account;
-        }
-
-        public int getAmount() {
-            return amount;
-        }
-        
-        public int getTransactionID() {
-            return transactionId;
-        }
     }
