@@ -8,7 +8,6 @@ package transaction;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -18,23 +17,18 @@ import java.util.ArrayList;
  */
 public class TransactionManager implements MessageTypes {
     
-    ArrayList<Transaction> transactions;
-    int transactionCounter;
+    private static final ArrayList<Transaction> transactions = new ArrayList<>();;
+    private static int transactionCounter = 0;
     
     public TransactionManager() {
-        transactions = new ArrayList<Transaction>();
-        transactionCounter = 0;
     }
     
-    public void addTransaction( Socket clientConnection ) {
-        
-        // Create a transaction object 
-        Transaction transaction = new Transaction( clientConnection ); 
-        
-        // Run transaction 
-        transaction.test(); 
-        
-        
+    public ArrayList<Transaction> getTransactions() {
+        return transactions;
+    }
+    
+    public void runTransaction(Socket client) {
+        (new TransactionManagerWorker(client)).start();  
     }
     
     public class TransactionManagerWorker extends Thread 

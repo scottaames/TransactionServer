@@ -27,7 +27,35 @@ public class TransactionClient extends Thread {
     @Override
     public void run() {
         for (int i = 0; i < numTransactions; i++) {
-            int transactionId;
+            new Thread() {
+                @Override
+                public void run() {
+                    TransactionServerProxy transaction = new TransactionServerProxy("127.0.0.1", serverPort);
+                    int transactionId = transaction.openTransaction();
+                    System.out.println("transaction #" + transactionId + " started");
+                    
+                    int accountFrom - (int) Math.floor(Math.random() * numberAccounts);
+                    int accountTo = (int) Math.floor(Math.random() * numberAccounts);
+                    int amount = (int) Math.ceil(Math.random() * initialBalance);
+                    int balance;
+                    System.out.println("\ttransaction #" + transactionId + ", $" + amount + " " + accountFrom + "->" + accountTo);
+                    
+                    balance = transaction.read(accountFrom);
+                    transaction.write(accountFrom, balance - amount);
+                    
+                    balance = transaction.read(accountTo);
+                    transaction.write(accountTo, balance + amount);
+                    
+                    transaction.closeTransaction();
+                    
+                    System.out.println("transaction #" + transactionId + " finished");
+                }
+            }.start();
+        }
+    }
+    
+    /**
+     * int transactionId;
             try { 
                 
                 // connect to application server
@@ -45,11 +73,9 @@ public class TransactionClient extends Thread {
                 
             }
         }
-    }
+        */
     
     public static void main(String[] args) {
-        for (int i = 0; i < 1; i ++) {
-            (new TransactionClient(20, 8080)).start();
-        }
+        (new TransactionClient(20, 8080)).start();
     }
 }

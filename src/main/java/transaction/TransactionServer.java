@@ -29,9 +29,9 @@ public class TransactionServer {
     public ServerSocket serverSocket;
     
     // The managers of the components of this project 
-    public TransactionManager transactionManager;
-    public AccountManager accountManager;
-    public LockManager lockManager;
+    public static TransactionManager transactionManager;
+    public static AccountManager accountManager;
+    public static LockManager lockManager;
  
     private OutputLogger logger = new OutputLogger( true ); 
     

@@ -6,7 +6,6 @@
 package transaction;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.Socket;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
  *
  * @author scott
  */
-public class Transaction implements Serializable {
+public class Transaction {
         int transID; 
         ArrayList<Lock> locks; 
         Socket client; 
