@@ -31,4 +31,49 @@ public class TransactionManager {
         
         
     }
+    
+    public class TransactionManagerWorker extends Thread 
+    {
+        // networking communication 
+        Socket client = null;
+        ObjectInputStream readFromNet = null;
+        ObjectOutputStream writeToNet = null;
+        Message message = null;
+        
+        // transaction related
+        Transaction transaction = null;
+        int accountId = 0;
+        int balance = 0;
+        
+        // flag for jumping out of while loop after this transaction closed
+        boolean keepGoing = true;
+        
+        private TransactionManagerWorker(Socket client)
+        {
+            this.client = client;
+            
+            try 
+            {
+                readFromNet = new ObjectInputStream(client.getInputStream());
+                writeToNet = new ObjectOutputStream(client.getOutputStream());
+            } catch (IOException e) {
+                System.out.println("[TransactionManagerWorker.run] Failed to open object streams");
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+        
+        @Override
+        public void run()
+        {
+            while (keepGoing) 
+            {
+                // reading msg
+                try
+                {
+                    message = (Message) readFromNet.readObject();
+                }
+            }
+        }
+    }
 }

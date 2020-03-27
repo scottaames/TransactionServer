@@ -3,9 +3,6 @@ package client;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import transaction.Message;
-import transaction.MessageTypes;
-import transaction.Transaction;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

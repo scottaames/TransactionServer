@@ -6,21 +6,54 @@
 package transaction;
 
 import java.util.HashMap;
-import transaction.Lock.LockTypes;
+import java.util.Iterator;
 
 /**
  *
  * @author scott
  */
-public class LockManager {
+public class LockManager implements LockTypes {
     
-    private HashMap<Lock, Account> theLocks;
+    private HashMap<Account, Lock> locks;
     
-    public void setLock(Account account, int transactionId, LockTypes lockType) {
-        
+    private boolean applyLocking;
+    
+    public LockManager(boolean applyLocking) {
+        this.locks = new HashMap<>();
+        this.applyLocking = applyLocking;
     }
     
-    public synchronized void unlock(int transactionId) {
+    public void lock(Account account, Transaction transaction, int lockType) {
+        // return, if we don't do locking
+        if (!applyLocking) return;
         
+        // get the lock that is attached to this account
+        Lock lock;
+        synchronized (this)
+        {
+            lock = locks.get(account);
+            
+            if (lock == null) 
+            {
+                // there is no lock attached to this account, create one
+                lock = new Lock(account);
+                locks.put(account, lock);
+                
+                transaction.log("[LockManager.setLock]      | lock created, account #" + account.getAccountID());
+            }
+        }
+        lock.acquire(transaction, lockType);
+    }
+    
+    public synchronized void unLock(Transaction transaction) {
+        if (!applyLocking) return;
+        
+        Iterator<Lock> lockIterator = transaction.getLocks().listIterator();
+        Lock currentLock;
+        while (lockIterator.hasNext())
+        {
+            currentLock = lockIterator.next();
+            transaction.log("[LockManager.unlock]       | releae " + Lock.getLockTypeString(currentLock.getLockType()) + ", account #" + currentLock.getAccount().getAccountID());
+        }
     }
 }
