@@ -10,18 +10,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  *
  * @author scott
  */
-public class TransactionManager {
+public class TransactionManager implements MessageTypes {
     
-    
+    ArrayList<Transaction> transactions;
+    int transactionCounter;
     
     public TransactionManager() {
-        
-        
+        transactions = new ArrayList<Transaction>();
+        transactionCounter = 0;
     }
     
     public void addTransaction( Socket clientConnection ) {
@@ -75,6 +77,48 @@ public class TransactionManager {
                 try
                 {
                     message = (Message) readFromNet.readObject();
+                } catch (IOException | ClassNotFoundException e)
+                {
+                    System.out.println("[TransactionManagerWorker.run] Message could not be read from object stream.");
+                    System.exit(1);
+                }
+                
+                switch (message.getType())
+                {
+                    case OPEN_TRANSACTION:
+                        
+                        synchronized (transactions) {
+                            transaction = new Transaction(transactionCounter++);
+                            transactions.add(transaction);
+                        }
+                        
+                        try {
+                            writeToNet.writeObject(transaction.getID());
+                        } catch (IOException e) {
+                            System.out.println("[TransactionManagerWorker.run] OPEN_TRANSACTION - Error when writing transactionID");
+                        }
+                        transaction.log("[TransactionManagerWorker.run] OPEN_TRANSACTION #" + transaction.getID());
+                        break;
+                    
+                    case CLOSE_TRANSACTION:
+                        
+                        TransactionServer.lockManager.unLock(transaction);
+                        transactions.remove(transaction);
+                        
+                        try {
+                            readFromNet.close();
+                            writeToNet.close();
+                            client.close();
+                            keepGoing = false;
+                        } catch (IOException e) {
+                            System.out.println("[TransactionManagerWorker.run] CLOSE_TRANSACTION - Error when closing connection with client");  
+                        }
+                        
+                        transaction.log("[TransactionManagerWorker.run] CLOSE_TRANSACTION #" + transaction.getID());
+                        
+                        if (TransactionServer.transactionView) {
+                            System.out.println(transaction.getLog());
+                        }
                 }
             }
         }
