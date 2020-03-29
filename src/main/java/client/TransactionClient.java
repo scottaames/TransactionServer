@@ -13,9 +13,7 @@ package client;
 public class TransactionClient extends Thread {
     
     int numTransactions;
-    int serverPort;
-    int numberAccounts; 
-    int initialBalance; 
+    int serverPort; 
     
     public TransactionClient(int numTransactions, int serverPort) {
        this.numTransactions = numTransactions;
@@ -25,8 +23,8 @@ public class TransactionClient extends Thread {
     @Override
     public void run() {
         
-        numberAccounts = 10; 
-        initialBalance = 10; 
+        int numberAccounts = 10; 
+        int initialBalance = 10; 
         
         for (int i = 0; i < numTransactions; i++) {
             new Thread() {
