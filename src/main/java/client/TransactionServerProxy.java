@@ -71,7 +71,40 @@ public class TransactionServerProxy extends Thread {
         } catch (IOException | ClassNotFoundException e ) {
             Logger.getLogger(TransactionServer.class.getName()).log(Level.SEVERE, null, e);
         }
-        
+
+        public int read(int accountNumber)
+        {
+            Message readMessage = new Message(READ_REQUEST, accountNumber);
+            Integer balance = null;
+
+            try {
+                writeToServer.writeObject(readMessage);
+                balance = (Integer) readFromServer.readObject();
+            }
+            catch( Exception e){
+                System.out.println("Server Proxy Read Error");
+                e.printStackTrace();
+            }
+
+            return balance;
+        }
+
+        public int write(int accountNumber, int amount)
+        {
+            Message writeMessage = new Message(WRITE_REQUEST, accountNumber, amount);
+            Integer balance = null;
+
+            try{
+                writeToServer.writeObject(writeMessage);
+                balance = (Integer) readFromServer.readObject();
+            }
+            catch( Exception e){
+                System.out.println("Server Proxy Write Error");
+                e.printStackTrace();
+            }
+
+            return balance;
+        }
         /*
         loop: while(true){
                 
