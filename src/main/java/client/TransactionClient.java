@@ -60,7 +60,7 @@ public class TransactionClient extends Thread {
             }.start();
         }
     }
-    
+
     /**
      * int transactionId;
             try { 
@@ -73,8 +73,6 @@ public class TransactionClient extends Thread {
                 proxy.run(); 
 
                 proxySocket.close(); 
-                
-                System.out.println( "Transaction: " + i ); 
                 
             } catch (Exception e) {
                 

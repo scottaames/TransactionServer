@@ -47,6 +47,10 @@ public class TransactionServerProxy implements MessageTypes {
         Message openMessage = new Message(OPEN_TRANSACTION, transactionId);
         
         try {
+            
+            // Create a connection to the server 
+            connectionToServer = new Socket( host, port ); 
+            
             System.out.println( "sending message" ); 
             writeToNet.writeObject(openMessage);
             System.out.println( "message sent" );
