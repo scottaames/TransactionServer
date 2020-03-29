@@ -13,9 +13,6 @@ import transaction.MessageTypes;
 import java.net.Socket;
 import transaction.Message;
 
-import Logger.OutputLogger; 
-import static transaction.MessageTypes.READ_REQUEST;
-
 /**
  *
  * @author scott
@@ -29,8 +26,6 @@ public class TransactionServerProxy implements MessageTypes {
     
     String host = null;
     int port;
-    
-    OutputLogger logger = new OutputLogger( true ); 
 
     public TransactionServerProxy(String host, int port) {
         this.host = host;
