@@ -76,5 +76,9 @@ public class Transaction {
             
             // Return the balance
         }
+        
+        public String getLog() {
+            return "get log called"; 
+        }
 
     }

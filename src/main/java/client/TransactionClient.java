@@ -34,7 +34,7 @@ public class TransactionClient extends Thread {
                     int transactionId = transaction.openTransaction();
                     System.out.println("transaction #" + transactionId + " started");
                     
-                    int accountFrom - (int) Math.floor(Math.random() * numberAccounts);
+                    int accountFrom = (int) Math.floor(Math.random() * numberAccounts);
                     int accountTo = (int) Math.floor(Math.random() * numberAccounts);
                     int amount = (int) Math.ceil(Math.random() * initialBalance);
                     int balance;

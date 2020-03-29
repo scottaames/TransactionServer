@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class Lock implements LockTypes {
     private Account account;
     private ArrayList<Transaction> lockHolders;
-    private final HashMap<Transaction, Object[]> lockRequestors;
+    private HashMap<Transaction, Object[]> lockRequestors;
     private int currentLockType;
     
     public Lock(int lockType, Account account) {
@@ -26,7 +26,7 @@ public class Lock implements LockTypes {
     
     public synchronized void acquire(Transaction transaction, int newLockType) {
         //log message goes here
-        transaction.log("[Lock.acquire]     | try " + getLockTypeString(newLockType) + " on account #" + account.getAccountId());
+        //transaction.log("[Lock.acquire]     | try " + getLockTypeString(newLockType) + " on account #" + account.getAccountId());
         while (isConflict(transaction, newLockType))
         {
             try {
@@ -87,7 +87,7 @@ public class Lock implements LockTypes {
             StringBuilder holders = new StringBuilder("");
             while(index < lockHolders.size())
             {
-                otherTransId = lockHolders.get(index);
+                otherTransId = lockHolders.get(index).getID();
                 holders.append(" ").append(otherTransId);
             }
             //log message goes here

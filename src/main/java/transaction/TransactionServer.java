@@ -36,22 +36,25 @@ public class TransactionServer {
     private OutputLogger logger = new OutputLogger( true ); 
     
     public int numTransactionsToRun;
+    public static boolean transactionView; 
     
     /**
      * Constructor method 
      * 
      * @param accountBalances The balance that we want all the accounts created to start with 
      */
-    public TransactionServer(int accountBalances) {
+    public TransactionServer(int accountBalances, boolean transView ) {
         
         // Create an account manager object that all start with the same balance
         accountManager = new AccountManager(NUM_ACCOUNTS, accountBalances);
         
         // Initialize our lock manager 
-        lockManager = new LockManager();
+        lockManager = new LockManager( true );
         
         // Initialize our transaction manager
         transactionManager = new TransactionManager();
+        
+        transactionView = transView; 
         
         try {
             
@@ -71,15 +74,14 @@ public class TransactionServer {
                 
                 // Let the user know that the server is waiting 
                 System.out.println( "[Transaction Server] Waiting for connections on port "+ SERVER_PORT);
+                
                 //Accept incomming connections.
                 Socket connectionToClient  = serverSocket.accept();
                 
                 System.out.println("[Transaction Server] A connection is established.");
                 
                 //Spin off new thread.
-                transactionManager.addTransaction( connectionToClient ); 
-                
-                //(new TransactionServerProxy(connectionToClient)).start();
+                transactionManager.runTransaction( connectionToClient ); 
             }    
 
         } catch (Exception e) {
@@ -90,7 +92,7 @@ public class TransactionServer {
     public static void main(String[] args) {
         
         // Initialize our transaction server with each account starting at 10 dollars
-        TransactionServer ts = new TransactionServer(10);
+        TransactionServer ts = new TransactionServer(10, true );
         
         // Execute the transaction server
         ts.run();

@@ -91,7 +91,7 @@ public class TransactionManager implements MessageTypes {
                         } catch (IOException e) {
                             System.out.println("[TransactionManagerWorker.run] OPEN_TRANSACTION - Error when writing transactionID");
                         }
-                        transaction.log("[TransactionManagerWorker.run] OPEN_TRANSACTION #" + transaction.getID());
+                        //transaction.log("[TransactionManagerWorker.run] OPEN_TRANSACTION #" + transaction.getID());
                         break;
                     
                     case CLOSE_TRANSACTION:
@@ -108,7 +108,7 @@ public class TransactionManager implements MessageTypes {
                             System.out.println("[TransactionManagerWorker.run] CLOSE_TRANSACTION - Error when closing connection with client");  
                         }
                         
-                        transaction.log("[TransactionManagerWorker.run] CLOSE_TRANSACTION #" + transaction.getID());
+                        //transaction.log("[TransactionManagerWorker.run] CLOSE_TRANSACTION #" + transaction.getID());
                         
                         if (TransactionServer.transactionView) {
                             System.out.println(transaction.getLog());

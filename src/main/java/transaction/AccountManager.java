@@ -42,7 +42,7 @@ public class AccountManager implements LockTypes {
         return (getAccount(accountId)).getBalance();
     }
     
-    public int write(int accountId, Transaction transaction, int balance) {
+    public void write(int accountId, Transaction transaction, int balance) {
         Account account = getAccount(accountId);
         (TransactionServer.lockManager).lock(account, transaction, WRITE_LOCK);
     }

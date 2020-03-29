@@ -36,10 +36,10 @@ public class LockManager implements LockTypes {
             if (lock == null) 
             {
                 // there is no lock attached to this account, create one
-                lock = new Lock(account);
+                lock = new Lock( lockType, account );
                 locks.put(account, lock);
                 
-                transaction.log("[LockManager.setLock]      | lock created, account #" + account.getAccountID());
+                //transaction.log("[LockManager.setLock]      | lock created, account #" + account.getAccountId());
             }
         }
         lock.acquire(transaction, lockType);
@@ -53,7 +53,7 @@ public class LockManager implements LockTypes {
         while (lockIterator.hasNext())
         {
             currentLock = lockIterator.next();
-            transaction.log("[LockManager.unlock]       | releae " + Lock.getLockTypeString(currentLock.getLockType()) + ", account #" + currentLock.getAccount().getAccountID());
+            //transaction.log("[LockManager.unlock]       | releae " + Lock.getLockTypeString(currentLock.getLockType()) + ", account #" + currentLock.getAccount().getAccountID());
         }
     }
 }
