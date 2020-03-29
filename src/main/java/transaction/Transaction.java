@@ -47,6 +47,22 @@ public class Transaction {
             locks.add( lock ); 
         }
         
+        public void write() {
+            
+            // Read the balance of the account associated with this transaction 
+            
+            // Add/subtract the amount of money that we want to change on this account 
+            
+        }
+        
+        public void read() {
+            
+            // Get the balance from the account associated with this transaction
+            
+            
+            // Return the balance
+        }
+        
         public String getLog() {
             return "get log called"; 
         }

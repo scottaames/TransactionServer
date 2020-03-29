@@ -1,10 +1,5 @@
 package client;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import transaction.TransactionServer;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -30,8 +25,8 @@ public class TransactionClient extends Thread {
     @Override
     public void run() {
         
-        numberAccounts = TransactionServer.NUM_ACCOUNTS; 
-        initialBalance = TransactionServer.initialBalance; 
+        numberAccounts = 10; 
+        initialBalance = 10; 
         
         for (int i = 0; i < numTransactions; i++) {
             new Thread() {
@@ -62,30 +57,5 @@ public class TransactionClient extends Thread {
                 }
             }.start();
         }
-    }
-
-    /**
-     * int transactionId;
-            try { 
-                
-                // connect to application server
-                Socket proxySocket = new Socket("127.0.0.1", serverPort);
-                
-                TransactionServerProxy proxy = new TransactionServerProxy( proxySocket ); 
-                
-                proxy.run(); 
-
-                proxySocket.close(); 
-                
-                System.out.println( "Transaction: " + i ); 
-                
-            } catch (Exception e) {
-                
-            }
-        }
-        */
-    
-    public static void main(String[] args) {
-        (new TransactionClient(5, 8080)).start();
     }
 }

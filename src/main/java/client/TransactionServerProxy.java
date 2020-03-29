@@ -29,7 +29,7 @@ public class TransactionServerProxy implements MessageTypes {
     private Socket dbConnection = null;
     private ObjectOutputStream writeToNet = null;
     private ObjectInputStream readFromNet = null;
-    private Integer transactionId = 0;
+    private static int transactionId = 0;
     private Socket connectionToServer = null; 
     
     String host = null;
@@ -48,7 +48,7 @@ public class TransactionServerProxy implements MessageTypes {
         
         try {
             
-            // Create a connection to the server 
+            // Create a connection to the server
             connectionToServer = new Socket( host, port ); 
             writeToNet = new ObjectOutputStream( connectionToServer.getOutputStream() ); 
             readFromNet = new ObjectInputStream( connectionToServer.getInputStream() ); 
