@@ -12,31 +12,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Logger.OutputLogger; 
+import java.io.IOException;
 
 /**
  *
  * @author scott
  */
-public class TransactionServer {
+public class TransactionServer extends Thread {
     
-    // The server port that we want to use
-    public final int SERVER_PORT = 8080;
-    
-    // The IP address of local host that we want all of our nodes to run on 
+    // The server port and ip that we want to use
+    public final int SERVER_PORT = 8080; 
     public final String SERVER_IP = "127.0.0.1";
-    
-    public static final int NUM_ACCOUNTS = 20;
-    public static int initialBalance; 
     public ServerSocket serverSocket;
     
     // The managers of the components of this project 
     public static TransactionManager transactionManager;
     public static AccountManager accountManager;
     public static LockManager lockManager;
- 
-    private OutputLogger logger = new OutputLogger( true ); 
     
-    public int numTransactionsToRun;
     public static boolean transactionView; 
     
     /**
@@ -46,50 +39,45 @@ public class TransactionServer {
      */
     public TransactionServer(int accountBalances, boolean transView ) {
         
-        initialBalance = accountBalances; 
+        int initialBalance = accountBalances;
+        int numberOfAccounts = 10;
         
         // Create an account manager object that all start with the same balance
-        accountManager = new AccountManager(NUM_ACCOUNTS, accountBalances);
+        TransactionServer.accountManager = new AccountManager(numberOfAccounts, initialBalance);
+        System.out.println("[TransactionServer.TransactionServer] Account Manager created");
         
         // Initialize our lock manager 
-        lockManager = new LockManager( true );
+        boolean applyLocking = true;
+        TransactionServer.lockManager = new LockManager( applyLocking );
+        System.out.println("[TransactionServer.TransactionServer] Lock Manager created");
         
         // Initialize our transaction manager
-        transactionManager = new TransactionManager();
-        
+        TransactionServer.transactionManager = new TransactionManager();
         transactionView = transView; 
+        System.out.println("[TransactionServer.TransactionServer] Transaction Manager created");
         
         try {
-            
             // Create a serversocket on our chosen port 
             serverSocket = new ServerSocket(SERVER_PORT);
-        } catch (Exception e) {
-            Logger.getLogger(TransactionServer.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println("[TransactionServer.TransactionServer] ServerSocket created");
+        } catch (IOException e) {
+            System.out.println("[TransactionServer.TransactionServer] Could not create server socket");
+            e.printStackTrace();
+            System.exit(1);
         }
     }
     
      public void run() {
     // start serving clients in server loop ...
-
-        try {
             
-            while(true) {
-                
-                // Let the user know that the server is waiting 
-                System.out.println( "[Transaction Server] Waiting for connections on port "+ SERVER_PORT);
-                
-                //Accept incomming connections.
-                Socket connectionToClient  = serverSocket.accept();
-                
-                System.out.println("[Transaction Server] A connection is established.");
-                
-                //Spin off new thread.
-                transactionManager.runTransaction( connectionToClient ); 
-            }    
+        while(true) {
+            try {
+                transactionManager.runTransaction( serverSocket.accept() );    
 
-        } catch (Exception e) {
-            System.err.println(e);
-            System.exit(1);
+            } catch (IOException e) {
+                System.out.println("[TransactionServer.run] Warning: Error accepting client");
+                e.printStackTrace();
+            }
         }
     }
 }
