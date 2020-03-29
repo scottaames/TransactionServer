@@ -74,6 +74,8 @@ public class TransactionClient extends Thread {
 
                 proxySocket.close(); 
                 
+                System.out.println( "Transaction: " + i ); 
+                
             } catch (Exception e) {
                 
             }
