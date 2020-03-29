@@ -42,7 +42,8 @@ public class TransactionServerProxy implements MessageTypes {
     }
     
     public int openTransaction() {
-        Message openMessage = new Message(OPEN_TRANSACTION, null);
+        transactionId++;
+        Message openMessage = new Message(OPEN_TRANSACTION, transactionId);
         
         try {
             writeToNet.writeObject(openMessage);
@@ -51,6 +52,7 @@ public class TransactionServerProxy implements MessageTypes {
             e.printStackTrace();
             System.exit(1);
         }
+        return transactionId;
     }
     
     public void closeTransaction() {
