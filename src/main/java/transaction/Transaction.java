@@ -47,36 +47,6 @@ public class Transaction {
             locks.add( lock ); 
         }
         
-        public void test() {
-            
-            try {
-            // Print to the server that the Transaction is working
-            System.out.println( "transaction working" ); 
-            
-            // Send a message through to the socket to ensure connection 
-            ObjectOutputStream writeToClient = new ObjectOutputStream( this.client.getOutputStream());
-            writeToClient.writeObject( "Message from Transaction" ); 
-            
-            } catch (IOException ex) {
-                Logger.getLogger(TransactionServer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
-        public void write() {
-            
-            // Read the balance of the account associated with this transaction 
-            
-            // Add/subtract the amount of money that we want to change on this account 
-            
-        }
-        
-        public void read() {
-            
-            // Get the balance from the account associated with this transaction
-            
-            // Return the balance
-        }
-        
         public String getLog() {
             return "get log called"; 
         }

@@ -15,7 +15,7 @@ public class Main {
     
     public static void main(String[] args) {
         
-        TransactionClient client = new TransactionClient(20, 8080);
+        TransactionClient client = new TransactionClient(3, 8080);
         TransactionServer server = new TransactionServer(10, true );
         
         new Thread() {
