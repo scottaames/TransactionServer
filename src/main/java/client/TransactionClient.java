@@ -83,6 +83,6 @@ public class TransactionClient extends Thread {
         */
     
     public static void main(String[] args) {
-        (new TransactionClient(20, 8080)).start();
+        (new TransactionClient(5, 8080)).start();
     }
 }

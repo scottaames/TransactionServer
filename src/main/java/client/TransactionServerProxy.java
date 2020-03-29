@@ -30,6 +30,7 @@ public class TransactionServerProxy implements MessageTypes {
     private ObjectOutputStream writeToNet = null;
     private ObjectInputStream readFromNet = null;
     private Integer transactionId = 0;
+    private Socket connectionToServer = null; 
     
     String host = null;
     int port;
@@ -46,7 +47,9 @@ public class TransactionServerProxy implements MessageTypes {
         Message openMessage = new Message(OPEN_TRANSACTION, transactionId);
         
         try {
+            System.out.println( "sending message" ); 
             writeToNet.writeObject(openMessage);
+            System.out.println( "message sent" );
         } catch(IOException e) {
             System.out.println("Server Proxy Open Transaction error.");
             e.printStackTrace();
