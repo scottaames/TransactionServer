@@ -19,92 +19,68 @@ import transaction.Transaction;
 import transaction.TransactionServer;
 
 import Logger.OutputLogger; 
+import static transaction.MessageTypes.READ_REQUEST;
 
 /**
  *
  * @author scott
  */
-public class TransactionServerProxy extends Thread {
-    Socket client = null;
-    ObjectOutputStream writeToServer = null;
-    ObjectInputStream readFromServer = null;
-
-    Message message = null;
-    Transaction transaction;
-    int transactionId;
-    int accountID;
-    Object resultObject;
+public class TransactionServerProxy implements MessageTypes {
+    private Socket dbConnection = null;
+    private ObjectOutputStream writeToNet = null;
+    private ObjectInputStream readFromNet = null;
+    private Integer transactionId = 0;
+    
+    String host = null;
+    int port;
+    
     OutputLogger logger = new OutputLogger( true ); 
 
-    public TransactionServerProxy(Socket client) {
-        this.client = client;
+    public TransactionServerProxy(String host, int port) {
+        this.host = host;
+        this.port = port;
     }
+    
+    public int openTransaction() {
+        
+    }
+    
+    public void closeTransaction() {
+        
+    }
+    
+    public int read(int accountNumber) {
+        Message readMessage = new Message(READ_REQUEST, accountNumber);
+        Integer balance = null;
 
-    @Override
-    public void run() {
         try {
-            // setting up object streams
-            logger.print( "Connecting input and output to server" ); 
-            readFromServer = new ObjectInputStream(client.getInputStream());
-            writeToServer = new ObjectOutputStream(client.getOutputStream());    
-            
-            // Create our message 
-            logger.print( "Creating message" ); 
-            Message message;
-            //Open Transactiona
-            message = new Message(MessageTypes.OPEN_TRANSACTION, null);
-            
-            // Send the message to the server 
-            logger.print( "Sending message to server" ); 
-            Transaction readObject;
-            writeToServer.writeObject(message);
-            
-            // Obtain a response from the server 
-            logger.print( "Getting reponse from server" ); 
-            String messageFromServer = (String) readFromServer.readObject(); 
-            
-            System.out.println( messageFromServer ); 
-            
-            // Print the message to the user 
-            
-
-        } catch (IOException | ClassNotFoundException e ) {
-            Logger.getLogger(TransactionServer.class.getName()).log(Level.SEVERE, null, e);
+            writeToNet.writeObject(readMessage);
+            balance = (Integer) readFromNet.readObject();
+        }
+        catch( Exception e){
+            System.out.println("Server Proxy Read Error");
+            e.printStackTrace();
         }
 
-        public int read(int accountNumber)
-        {
-            Message readMessage = new Message(READ_REQUEST, accountNumber);
-            Integer balance = null;
+        return balance;
+    }
+    
+    public int write(int accountNumber, int amount) {
+        Message writeMessage = new Message(WRITE_REQUEST, accountNumber); // need amount
+        Integer balance = null;
 
-            try {
-                writeToServer.writeObject(readMessage);
-                balance = (Integer) readFromServer.readObject();
-            }
-            catch( Exception e){
-                System.out.println("Server Proxy Read Error");
-                e.printStackTrace();
-            }
-
-            return balance;
+        try{
+            writeToNet.writeObject(writeMessage);
+            balance = (Integer) readFromNet.readObject();
+        }
+        catch( Exception e){
+            System.out.println("Server Proxy Write Error");
+            e.printStackTrace();
         }
 
-        public int write(int accountNumber, int amount)
-        {
-            Message writeMessage = new Message(WRITE_REQUEST, accountNumber, amount);
-            Integer balance = null;
-
-            try{
-                writeToServer.writeObject(writeMessage);
-                balance = (Integer) readFromServer.readObject();
-            }
-            catch( Exception e){
-                System.out.println("Server Proxy Write Error");
-                e.printStackTrace();
-            }
-
-            return balance;
-        }
+        return balance;
+    }
+}
         /*
         loop: while(true){
                 
@@ -122,5 +98,3 @@ public class TransactionServerProxy extends Thread {
                     System.out.println("opening transaction.");
             }
         } */ 
-    }
-}
