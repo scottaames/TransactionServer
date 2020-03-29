@@ -60,29 +60,4 @@ public class TransactionClient extends Thread {
             }.start();
         }
     }
-    
-    /**
-     * int transactionId;
-            try { 
-                
-                // connect to application server
-                Socket proxySocket = new Socket("127.0.0.1", serverPort);
-                
-                TransactionServerProxy proxy = new TransactionServerProxy( proxySocket ); 
-                
-                proxy.run(); 
-
-                proxySocket.close(); 
-                
-                System.out.println( "Transaction: " + i ); 
-                
-            } catch (Exception e) {
-                
-            }
-        }
-        */
-    
-    public static void main(String[] args) {
-        (new TransactionClient(20, 8080)).start();
-    }
 }

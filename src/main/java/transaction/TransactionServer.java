@@ -89,16 +89,8 @@ public class TransactionServer {
 
         } catch (Exception e) {
             System.err.println(e);
+            System.exit(1);
         }
-    }
-     
-    public static void main(String[] args) {
-        
-        // Initialize our transaction server with each account starting at 10 dollars
-        TransactionServer ts = new TransactionServer(10, true );
-        
-        // Execute the transaction server
-        ts.run();
     }
 }
 

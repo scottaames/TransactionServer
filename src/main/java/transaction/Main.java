@@ -17,8 +17,18 @@ public class Main {
         
         TransactionClient client = new TransactionClient(20, 8080);
         TransactionServer server = new TransactionServer(10, true );
-        
-        server.run();
-        client.start();
+        new Thread() {
+            @Override
+            public void run() {
+                server.run();
+            }
+        }.start
+                
+        new Thread() {
+            @Override
+            public void run() {
+                client.start();
+            }
+        }.start();
     }
 }
