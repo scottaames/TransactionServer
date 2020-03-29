@@ -11,7 +11,7 @@ package transaction;
  */
 public class Account {
     private int balance;
-    private int accountId;
+    private final int accountId;
 
     public Account(int accountId, int balance) {
         this.balance = balance;
@@ -26,7 +26,7 @@ public class Account {
         this.balance = newBalance;
     }
 
-    public int getAccountID() {
+    public int getAccountId() {
         return this.accountId;
     } 
 }

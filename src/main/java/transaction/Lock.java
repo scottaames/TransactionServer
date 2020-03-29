@@ -6,6 +6,7 @@
 package transaction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -13,54 +14,59 @@ import java.util.ArrayList;
  */
 public class Lock implements LockTypes {
     private Account account;
-    private ArrayList<Integer> lockHolders;
-    private int lockType;
+    private ArrayList<Transaction> lockHolders;
+    private final HashMap<Transaction, Object[]> lockRequestors;
+    private int currentLockType;
     
     public Lock(int lockType, Account account) {
         this.account = account;
-        this.lockHolders = new ArrayList<Integer>();
-        this.lockType = lockType;
+        this.lockHolders = new ArrayList<>();
+        this.currentLockType = EMPTY_LOCK;
     }
     
-    public synchronized void acquire(int transactionID, int aLockType) {
+    public synchronized void acquire(Transaction transaction, int newLockType) {
         //log message goes here
-        try {
-            //log message goes here
-
-            wait();
-        } catch (InterruptedException e) {   
-        }
-        if (lockHolders.isEmpty()) { // no TIDs hol lock
-            lockHolders.add(transactionID);
-            lockType = aLockType;
-        } else if (true /* anotehr transaction holds the lock, share it */) {
-            if ( true /* this transaction not a holder */) {
-                lockHolders.add(transactionID);
-            }
-        } else if (lockHolders.size() == 1 && lockType == READ_LOCK && aLockType == WRITE_LOCK) {
-            /* this transaction is a holder but needs a more exclusive lock */
-            //log message goes here
-            lockType = WRITE_LOCK;
-        }
-        else
+        transaction.log("[Lock.acquire]     | try " + getLockTypeString(newLockType) + " on account #" + account.getAccountId());
+        while (isConflict(transaction, newLockType))
         {
-            //setting a read lock on read lock it holds
-            //setting write lock on write lock it holds
-            //setting a read lock on a write lock it holds
-            //log message goes here
+            try {
+                //log message goes here
+
+                wait();
+            } catch (InterruptedException e) {   
+            }
+            if (lockHolders.isEmpty()) { // no TIDs hol lock
+                lockHolders.add(transaction);
+                currentLockType = newLockType;
+            } else if (true /* anotehr transaction holds the lock, share it */) {
+                if ( true /* this transaction not a holder */) {
+                    lockHolders.add(transaction);
+                }
+            } else if (lockHolders.size() == 1 && currentLockType == READ_LOCK && currentLockType == WRITE_LOCK) {
+                /* this transaction is a holder but needs a more exclusive lock */
+                //log message goes here
+                currentLockType = WRITE_LOCK;
+            }
+            else
+            {
+                //setting a read lock on read lock it holds
+                //setting write lock on write lock it holds
+                //setting a read lock on a write lock it holds
+                //log message goes here
+            }
         }
     }
     //releases locks given a transactionID on that transaction
-    public synchronized void release(int transactionId) {
-        lockHolders.remove(transactionId);
+    public synchronized void release(Transaction transaction) {
+        lockHolders.remove(transaction);
         if(lockHolders.isEmpty())
         {
-            lockType = EMPTY_LOCK;
+            currentLockType = EMPTY_LOCK;
         }
         notifyAll();
     }
 
-    private boolean isConflict(int transactionId, int aLockType)
+    private boolean isConflict(Transaction transaction, int newLockType)
     {
         //no lock holders, no conflict
         if(lockHolders.isEmpty())
@@ -69,7 +75,7 @@ public class Lock implements LockTypes {
             return false;
         }
         //this transcation has the lockholder, no conflict
-        else if (lockHolders.size() == 1 && lockHolders.contains(transactionId))
+        else if (lockHolders.size() == 1 && lockHolders.contains(transaction))
         {
             //log message goes here
             return false;
@@ -91,7 +97,7 @@ public class Lock implements LockTypes {
 
     public synchronized int getLockType()
     {
-        return lockType;
+        return currentLockType;
     }
 
     public Account getAccount()
