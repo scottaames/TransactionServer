@@ -42,11 +42,27 @@ public class TransactionServerProxy implements MessageTypes {
     }
     
     public int openTransaction() {
+        Message openMessage = new Message(OPEN_TRANSACTION, null);
         
+        try {
+            writeToNet.writeObject(openMessage);
+        } catch(IOException e) {
+            System.out.println("Server Proxy Open Transaction error.");
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
     
     public void closeTransaction() {
+        Message closeMessage = new Message(CLOSE_TRANSACTION, null);
         
+        try {
+            writeToNet.writeObject(closeMessage);
+        } catch (IOException e) {
+            System.out.println("Server Proxy Close Transaction error.");
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
     
     public int read(int accountNumber) {
@@ -60,6 +76,7 @@ public class TransactionServerProxy implements MessageTypes {
         catch( Exception e){
             System.out.println("Server Proxy Read Error");
             e.printStackTrace();
+            System.exit(1);
         }
 
         return balance;
@@ -76,6 +93,7 @@ public class TransactionServerProxy implements MessageTypes {
         catch( Exception e){
             System.out.println("Server Proxy Write Error");
             e.printStackTrace();
+            System.exit(1);
         }
 
         return balance;
