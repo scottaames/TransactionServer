@@ -3,6 +3,7 @@ package client;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import transaction.TransactionServer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,6 +19,8 @@ public class TransactionClient extends Thread {
     
     int numTransactions;
     int serverPort;
+    int numberAccounts; 
+    int initialBalance; 
     
     public TransactionClient(int numTransactions, int serverPort) {
        this.numTransactions = numTransactions;
@@ -26,6 +29,10 @@ public class TransactionClient extends Thread {
     
     @Override
     public void run() {
+        
+        numberAccounts = TransactionServer.NUM_ACCOUNTS; 
+        initialBalance = TransactionServer.initialBalance; 
+        
         for (int i = 0; i < numTransactions; i++) {
             new Thread() {
                 @Override

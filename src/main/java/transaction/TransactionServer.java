@@ -25,7 +25,8 @@ public class TransactionServer {
     // The IP address of local host that we want all of our nodes to run on 
     public final String SERVER_IP = "127.0.0.1";
     
-    public final int NUM_ACCOUNTS = 20;
+    public static final int NUM_ACCOUNTS = 20;
+    public static int initialBalance; 
     public ServerSocket serverSocket;
     
     // The managers of the components of this project 
@@ -44,6 +45,8 @@ public class TransactionServer {
      * @param accountBalances The balance that we want all the accounts created to start with 
      */
     public TransactionServer(int accountBalances, boolean transView ) {
+        
+        initialBalance = accountBalances; 
         
         // Create an account manager object that all start with the same balance
         accountManager = new AccountManager(NUM_ACCOUNTS, accountBalances);
