@@ -44,12 +44,15 @@ public class TransactionServerProxy implements MessageTypes {
             readFromNet = new ObjectInputStream( connectionToServer.getInputStream() ); 
              
             writeToNet.writeObject(openMessage);
-        } catch(IOException e) {
+            return ( int )readFromNet.readObject(); 
+            
+        } catch(IOException | ClassNotFoundException e ) {
             System.out.println("Server Proxy Open Transaction error.");
             e.printStackTrace();
             System.exit(1);
+            return 0; 
         }
-        return transactionId;
+        
     }
     
     public void closeTransaction() {
@@ -81,13 +84,13 @@ public class TransactionServerProxy implements MessageTypes {
         return balance;
     }
     
-    public int write(int accountNumber, int amount) {
-        Message writeMessage = new Message(WRITE_REQUEST, accountNumber); // need amount
+    public void write(int accountNumber, int amount) {
+        Message writeMessage = new Message(WRITE_REQUEST, accountNumber, amount); // need amount
         Integer balance = null;
 
         try{
             writeToNet.writeObject(writeMessage);
-            balance = (Integer) readFromNet.readObject();
+            //balance = (Integer) readFromNet.readObject();
         }
         catch( Exception e){
             System.out.println("Server Proxy Write Error");
@@ -95,6 +98,6 @@ public class TransactionServerProxy implements MessageTypes {
             System.exit(1);
         }
 
-        return balance;
+        //return balance;
     }
 }

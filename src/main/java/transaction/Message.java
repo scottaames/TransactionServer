@@ -20,10 +20,17 @@ public class Message implements MessageTypes, Serializable {
      */
     
     Object content;
+    Object amount; 
 
     public Message(int type, Object content) {
         this.type = type;
         this.content = content;
+    }
+    
+    public Message( int type, Object content, Object amount ) {
+        this.type = type; 
+        this.content = content; 
+        this.amount = amount; 
     }
     
     /**
@@ -43,5 +50,10 @@ public class Message implements MessageTypes, Serializable {
 
     public Object getContent() {
         return content;
+    }
+    
+    public Object getAmount() {
+        
+        return amount; 
     }
 }

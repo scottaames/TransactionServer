@@ -42,7 +42,9 @@ public class TransactionClient extends Thread {
                     
                     System.out.println( "reading" ); 
                     balance = proxy.read(accountFrom);
+                    System.out.println( "balance: " + balance ); 
                     proxy.write(accountFrom, balance - amount);
+                    System.out.println( "after balance: " + proxy.read( accountFrom )); 
                     
                     System.out.println( "Writing" ); 
                     balance = proxy.read(accountTo);

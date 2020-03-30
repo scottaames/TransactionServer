@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock; 
 
 /**
  *
@@ -44,6 +45,8 @@ public class TransactionManager implements MessageTypes {
         Account account; 
         int accountId = 0;
         int balance = 0;
+        ReentrantLock incrementLock = new ReentrantLock(); 
+        int transId; 
         
         // flag for jumping out of while loop after this transaction closed
         boolean keepGoing = true;
@@ -82,10 +85,20 @@ public class TransactionManager implements MessageTypes {
                 {
                     case OPEN_TRANSACTION:
                         
-                        transaction = new Transaction(transactionCounter++);
+                        // 
+                        incrementLock.lock(); 
+                        try {
+                            transId = transactionCounter;
+                            System.out.println( transId ); 
+                            transactionCounter++; 
+                        } finally {
+                            incrementLock.unlock(); 
+                        }
                         
                         synchronized (transactions) {
                             
+                            System.out.println( "transID: " + transId );
+                            transaction = new Transaction(transId);
                             transactions.add(transaction);
                         }
                         
@@ -137,7 +150,7 @@ public class TransactionManager implements MessageTypes {
                         account = TransactionServer.accountManager.getAccount( (int) message.content ); 
                             
                         // Change its balance 
-                        account.setBalance( (int) message.content ); 
+                        account.setBalance( (int) message.amount ); 
                 }
             }
         }
