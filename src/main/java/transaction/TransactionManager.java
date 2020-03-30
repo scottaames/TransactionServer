@@ -41,6 +41,7 @@ public class TransactionManager implements MessageTypes {
         
         // transaction related
         Transaction transaction = null;
+        Account account; 
         int accountId = 0;
         int balance = 0;
         
@@ -81,8 +82,10 @@ public class TransactionManager implements MessageTypes {
                 {
                     case OPEN_TRANSACTION:
                         
+                        transaction = new Transaction(transactionCounter++);
+                        
                         synchronized (transactions) {
-                            transaction = new Transaction(transactionCounter++);
+                            
                             transactions.add(transaction);
                         }
                         
@@ -113,6 +116,28 @@ public class TransactionManager implements MessageTypes {
                         if (TransactionServer.transactionView) {
                             System.out.println(transaction.getLog());
                         }
+                        
+                        break; 
+                    
+                    case READ_REQUEST: 
+                        
+                        try {
+                            // Find the account with the same ID that we're searching for 
+                            account = TransactionServer.accountManager.getAccount( (int) message.content ); 
+                            writeToNet.writeObject( account.getBalance() ); 
+                        } catch (IOException e ) {
+                            System.out.println( "Failed to find account or access its balance" ); 
+                        }
+                        
+                        break; 
+                        
+                    case WRITE_REQUEST: 
+                        
+                        // Find the account we want to access 
+                        account = TransactionServer.accountManager.getAccount( (int) message.content ); 
+                            
+                        // Change its balance 
+                        account.setBalance( (int) message.content ); 
                 }
             }
         }

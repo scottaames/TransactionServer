@@ -52,10 +52,8 @@ public class TransactionServerProxy implements MessageTypes {
             connectionToServer = new Socket( host, port ); 
             writeToNet = new ObjectOutputStream( connectionToServer.getOutputStream() ); 
             readFromNet = new ObjectInputStream( connectionToServer.getInputStream() ); 
-            
-            System.out.println( "sending message" ); 
+             
             writeToNet.writeObject(openMessage);
-            System.out.println( "message sent" );
         } catch(IOException e) {
             System.out.println("Server Proxy Open Transaction error.");
             e.printStackTrace();
@@ -110,20 +108,3 @@ public class TransactionServerProxy implements MessageTypes {
         return balance;
     }
 }
-        /*
-        loop: while(true){
-                
-            // reading message
-            try {
-                message = (Message) readFromServer.readObject();
-            } catch (IOException | ClassNotFoundException e) {
-                System.err.println("[Transaction Server]: Message could not be read from object stream.");
-                e.printStackTrace();
-                System.exit(1);
-            }
-            
-            switch (message.getType()) {
-                case OpenTransaction:
-                    System.out.println("opening transaction.");
-            }
-        } */ 

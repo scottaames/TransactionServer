@@ -18,17 +18,12 @@ import java.util.ArrayList;
  */
 public class Transaction {
         int transID; 
-        ArrayList<Lock> locks; 
-        Socket client; 
+        ArrayList<Lock> locks;
+        StringBuffer log = new StringBuffer("");
         
-        public Transaction( Socket client ) {
+        public Transaction( int transId ) {
             
-            this.client = client; 
-        }
-        
-        public Transaction( int id ) {
-            
-            this.transID = id; 
+            this.transID = transId; 
             this.locks = new ArrayList(); 
         }
         
@@ -47,24 +42,16 @@ public class Transaction {
             locks.add( lock ); 
         }
         
-        public void write() {
+        public void log(String logString) {
+            log.append("\n").append(logString);
             
-            // Read the balance of the account associated with this transaction 
-            
-            // Add/subtract the amount of money that we want to change on this account 
-            
+            if (!TransactionServer.transactionView) {
+                System.out.println("Transaction # " + this.getID() + ((this.getID() < 10) ? " " : "") + logString);
+            }
         }
         
-        public void read() {
-            
-            // Get the balance from the account associated with this transaction
-            
-            
-            // Return the balance
-        }
-        
-        public String getLog() {
-            return "get log called"; 
+        public StringBuffer getLog() {
+            return log;
         }
 
     }
