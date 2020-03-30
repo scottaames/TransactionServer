@@ -18,14 +18,14 @@ public class Lock implements LockTypes {
     private HashMap<Transaction, Object[]> lockRequestors;
     private int currentLockType;
     
-    public Lock(int lockType, Account account) {
+    public Lock(Account account) {
         this.account = account;
         this.lockHolders = new ArrayList<>();
         this.currentLockType = EMPTY_LOCK;
     }
     
     public synchronized void acquire(Transaction transaction, int newLockType) {
-        transaction.log("[lock.acquire            | try " +
+        transaction.log("[Lock.acquire                | try " +
                 getLockTypeString(newLockType) + "on account #" + account.getAccountId());
         while (isConflict(transaction, newLockType))
         {
@@ -41,6 +41,7 @@ public class Lock implements LockTypes {
                 lockHolders.add(transaction);
                 currentLockType = newLockType;
                 transaction.addLock(this);
+                transaction.log("[Lock.acquire]     | lock set to " + getLockTypeString(currentLockType) + " on account # " + account.getAccountId());
             }
             else if (!lockHolders.contains(transaction) /* anotehr transaction holds the lock, share it */)
             {
@@ -54,23 +55,27 @@ public class Lock implements LockTypes {
                 {
                     otherTransaction = lockHolders.get(index);
                     logString.append(" ").append(otherTransaction.getID());
+                    index++;
                 }
                 transaction.log(logString.toString());
             }
-            else if (lockHolders.size() == 1 && currentLockType == READ_LOCK && currentLockType == WRITE_LOCK)
+            else if (lockHolders.size() == 1 && currentLockType == READ_LOCK && newLockType == WRITE_LOCK)
             {
                 /* this transaction is a holder but needs a more exclusive lock */
-                transaction.log("[Lock.acquire]            |current lock " +
-                        getLockTypeString(currentLockType) + "on account "+ account.getAccountId());
+                transaction.log("[Lock.acquire]            | promote " +
+                        getLockTypeString(currentLockType) + " to " + getLockTypeString(newLockType) + " on account # " + account.getAccountId());
                 currentLockType = newLockType;
             }
             else
             {
-                //setting a read lock on read lock it holds
-                //setting write lock on write lock it holds
-                //setting a read lock on a write lock it holds
-                transaction.log("[Lock.isConflict]            |current lock " +
-                        getLockTypeString(currentLockType) + "on account "+ account.getAccountId());
+                // this is etiher of three cases:
+                // setting a read lock on read lock it holds
+                // setting write lock on write lock it holds
+                // setting a read lock on a write lock it holds
+                // all three cases are ignored
+                // no need to do anything
+                transaction.log("[Lock.aquire]            | ignore setting " +
+                        getLockTypeString(currentLockType) + "to "+ getLockTypeString(newLockType) + " on account # " + account.getAccountId());
             }
         }
     }
@@ -80,6 +85,11 @@ public class Lock implements LockTypes {
         if(lockHolders.isEmpty())
         {
             currentLockType = EMPTY_LOCK;
+            
+            if (lockRequestors.isEmpty())
+            {
+                // this lock is not used anymore, so delete it
+            }
         }
         notifyAll();
     }
@@ -90,14 +100,14 @@ public class Lock implements LockTypes {
         if(lockHolders.isEmpty())
         {
             transaction.log("[Lock.isConflict]            |current lock " +
-                            getLockTypeString(currentLockType) + "on account "+ account.getAccountId());
+                            getLockTypeString(currentLockType) + "on account # "+ account.getAccountId()+ ", transaction id # " + transaction.getID());
             return false;
         }
         //this transaction has the lockholder, no conflict
         else if (lockHolders.size() == 1 && lockHolders.contains(transaction))
         {
             transaction.log("[Lock.isConflict]            |current lock " +
-                            getLockTypeString(currentLockType) + "on account "+ account.getAccountId());
+                            getLockTypeString(currentLockType) + "on account # "+ account.getAccountId() + ", sharing with other transactions");
             return false;
         }
         else //conflict
@@ -148,7 +158,7 @@ public class Lock implements LockTypes {
 
     private void addLockRequestor(Transaction trans, int lockType)
     {
-        lockRequestors.put(trans, lockHolders);
+        lockRequestors.put(trans, lockType);
     }
 
     private void removeLockRequestor(Transaction trans)

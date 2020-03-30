@@ -134,23 +134,38 @@ public class TransactionManager implements MessageTypes {
                     
                     case READ_REQUEST: 
                         
-                        try {
-                            // Find the account with the same ID that we're searching for 
-                            account = TransactionServer.accountManager.getAccount( (int) message.content ); 
-                            writeToNet.writeObject( account.getBalance() ); 
+                        accountId =  (int) message.getContent(); 
+                        transaction.log("[TransactionManagerWorker.run] READ_REQUEST >>>>>>>>>>>>>>>>>>>>> account # " + accountId);
+                        balance = TransactionServer.accountManager.read(accountId, transaction);
+                        
+                        try { 
+                            writeToNet.writeObject( (int) balance); 
                         } catch (IOException e ) {
-                            System.out.println( "Failed to find account or access its balance" ); 
+                            System.out.println("[TransactionManagerWorker.run]  READ_REQUEST - Error when writing to object stream");
                         }
+                        
+                        transaction.log("[TransactionManagerWorker.run] READ_REQUEST <<<<<<<<<<<<<<<<<<<<<<<<<<<<< account #" + accountId + ", balance of $" + balance);
                         
                         break; 
                         
                     case WRITE_REQUEST: 
                         
                         // Find the account we want to access 
-                        account = TransactionServer.accountManager.getAccount( (int) message.content ); 
+                        // account = TransactionServer.accountManager.getAccount( (int) message.content ); 
+                        String msg = (String) message.getContent();
+                        String[] parts = msg.split(" ");
+                        accountId = Integer.parseInt(parts[0]);
+                        transaction.log("[TransactionManagerWorker.run] WRITE_REQUEST >>>>>>>>>>>>>>>>>>>>>>> account # " + accountId);
+                        balance = TransactionServer.accountManager.write(accountId, transaction, Integer.parseInt(parts[1]));
+                        
+                        try {
+                            writeToNet.writeObject(balance);
+                        } catch (IOException e) {
+                            System.out.println("[TransactionManagerWorker.run]  WRITE_REQUEST - Error when writing to object stream");
+                        }
                             
-                        // Change its balance 
-                        account.setBalance( (int) message.amount ); 
+                        transaction.log("[TransactionManagerWorker.run] WRITE_ERQUEST >>>>>>>>>>>>>>>>>>>>>>> account # " + accountId + ", new balance is $" + balance);
+                        break;
                 }
             }
         }
