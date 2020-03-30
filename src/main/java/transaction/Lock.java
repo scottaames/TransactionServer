@@ -25,7 +25,7 @@ public class Lock implements LockTypes {
     }
     
     public synchronized void acquire(Transaction transaction, int newLockType) {
-        transaction.log("[lock.acquire            | try " +
+        transaction.log("[Lock.acquire            | try " +
                 getLockTypeString(newLockType) + "on account #" + account.getAccountId());
         while (isConflict(transaction, newLockType))
         {
@@ -41,6 +41,7 @@ public class Lock implements LockTypes {
                 lockHolders.add(transaction);
                 currentLockType = newLockType;
                 transaction.addLock(this);
+                transaction.log("[Lock.acquire]     | lock set to " + getLockTypeString(currentLockType) + " on account # " + account.getAccountId());
             }
             else if (!lockHolders.contains(transaction) /* anotehr transaction holds the lock, share it */)
             {
@@ -57,11 +58,11 @@ public class Lock implements LockTypes {
                 }
                 transaction.log(logString.toString());
             }
-            else if (lockHolders.size() == 1 && currentLockType == READ_LOCK && currentLockType == WRITE_LOCK)
+            else if (lockHolders.size() == 1 && currentLockType == READ_LOCK && newLockType == WRITE_LOCK)
             {
                 /* this transaction is a holder but needs a more exclusive lock */
-                transaction.log("[Lock.acquire]            |current lock " +
-                        getLockTypeString(currentLockType) + "on account "+ account.getAccountId());
+                transaction.log("[Lock.acquire]            | promote " +
+                        getLockTypeString(currentLockType) + " to " + getLockTypeString(newLockType) + " on account # " + account.getAccountId());
                 currentLockType = newLockType;
             }
             else
@@ -80,6 +81,11 @@ public class Lock implements LockTypes {
         if(lockHolders.isEmpty())
         {
             currentLockType = EMPTY_LOCK;
+            
+            if (lockRequestors.isEmpty())
+            {
+                // this lock is not used anymore, so delete it
+            }
         }
         notifyAll();
     }
