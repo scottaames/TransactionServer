@@ -36,16 +36,34 @@ public class AccountManager implements LockTypes {
         return accounts.get(accountId);
     }
     
+    /**
+     * Performs a read action for the desired account and locks the account with a read lock 
+     * @param accountId The identifier for the account we want to read from 
+     * @param transaction The transaction that will hold the read lock 
+     * @return The balance of the account we want to access 
+     */
     public int read(int accountId, Transaction transaction) {
+        
+        // Get the account that we want to read from 
         Account account = getAccount(accountId);
+        
+        // Set the lock and continue if we are allowed 
         (TransactionServer.lockManager).lock(account, transaction, READ_LOCK);
-        return (getAccount(accountId)).getBalance();
+        
+        // Return the balance of the account 
+        return (account.getBalance());
     }
     
-    public int write(int accountId, Transaction transaction, int balance) {
+    /**
+     * Performs a write action for the desired account and locks the account with a write lock 
+     * @param accountId The identifier for the account we want to write to 
+     * @param transaction The transaction that will hold the lock 
+     * @param balance The balance that we want to set the account to 
+     * @return 
+     */
+    public void write(int accountId, Transaction transaction, int balance) {
         Account account = getAccount(accountId);
         (TransactionServer.lockManager).lock(account, transaction, WRITE_LOCK);
         account.setBalance(balance);
-        return balance;
     }
 }

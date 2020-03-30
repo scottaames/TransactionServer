@@ -16,18 +16,19 @@ public class TransactionClient extends Thread {
     
     int numTransactions;
     int serverPort;
+    int numberAccounts; 
+    int initialBalance; 
     ReentrantLock outputLock = new ReentrantLock(); 
     
-    public TransactionClient(int numTransactions, int serverPort) {
+    public TransactionClient(int numTransactions, int serverPort, int numOfAccounts, int initBalance ) {
        this.numTransactions = numTransactions;
        this.serverPort = serverPort;
+       this.numberAccounts = numOfAccounts; 
+       this.initialBalance = initBalance; 
     }
     
     @Override
     public void run() {
-        
-        int numberAccounts = 10; 
-        int initialBalance = 10; 
         
         for (int i = 0; i < numTransactions; i++) {
             new Thread() {

@@ -153,17 +153,11 @@ public class TransactionManager implements MessageTypes {
                         // Find the account we want to access 
                         // account = TransactionServer.accountManager.getAccount( (int) message.content ); 
                         String msg = (String) message.getContent();
-                        String[] parts = msg.split(" ");
+                        String[] parts = msg.split(",");
                         accountId = Integer.parseInt(parts[0]);
                         transaction.log("[TransactionManagerWorker.run] WRITE_REQUEST >>>>>>>>>>>>>>>>>>>>>>> account # " + accountId);
-                        balance = TransactionServer.accountManager.write(accountId, transaction, Integer.parseInt(parts[1]));
+                        TransactionServer.accountManager.write(accountId, transaction, Integer.parseInt(parts[1]));
                         
-                        try {
-                            writeToNet.writeObject(balance);
-                        } catch (IOException e) {
-                            System.out.println("[TransactionManagerWorker.run]  WRITE_REQUEST - Error when writing to object stream");
-                        }
-                            
                         transaction.log("[TransactionManagerWorker.run] WRITE_ERQUEST >>>>>>>>>>>>>>>>>>>>>>> account # " + accountId + ", new balance is $" + balance);
                         break;
                 }

@@ -25,16 +25,19 @@ public class TransactionServer extends Thread {
     public static LockManager lockManager;
     
     public static boolean transactionView; 
+    public static int initialBalance; 
+    public static int numberOfAccounts; 
     
     /**
      * Constructor method 
      * 
      * @param accountBalances The balance that we want all the accounts created to start with 
      */
-    public TransactionServer(int accountBalances, boolean transView ) {
+    public TransactionServer(int accountBalances, boolean transView, int numberOfAccounts ) {
         
-        int initialBalance = accountBalances;
-        int numberOfAccounts = 10;
+        // Initialize the balance we want the accounts to 
+        initialBalance = accountBalances;
+        this.numberOfAccounts = numberOfAccounts;
         
         // Create an account manager object that all start with the same balance
         TransactionServer.accountManager = new AccountManager(numberOfAccounts, initialBalance);
@@ -66,6 +69,8 @@ public class TransactionServer extends Thread {
             
         while(true) {
             try {
+                
+                // Take our socket to the client, and create a trasnaction object using it
                 transactionManager.runTransaction( serverSocket.accept() );    
 
             } catch (IOException e) {
