@@ -59,11 +59,16 @@ public class AccountManager implements LockTypes {
      * @param accountId The identifier for the account we want to write to 
      * @param transaction The transaction that will hold the lock 
      * @param balance The balance that we want to set the account to 
-     * @return 
      */
     public void write(int accountId, Transaction transaction, int balance) {
+        
+        // Get the account we want to write to 
         Account account = getAccount(accountId);
+        
+        // Set the lock and continue if we are allowed 
         (TransactionServer.lockManager).lock(account, transaction, WRITE_LOCK);
+        
+        // Set the balance of the account 
         account.setBalance(balance);
     }
 }

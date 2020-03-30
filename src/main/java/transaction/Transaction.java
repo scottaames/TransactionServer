@@ -8,12 +8,18 @@ package transaction;
 import java.util.ArrayList;
 
 /**
- *
+ * An object that encapsulates all of the information about a transaction 
  * @author scott
  */
 public class Transaction {
+    
+        // The idenfier for this transaction 
         int transID; 
+        
+        // The locks tha this transaction is holding 
         ArrayList<Lock> locks;
+        
+        // The string buffer that will be used to output all lock activity at the end
         StringBuffer log = new StringBuffer("");
         
         public Transaction( int transId ) {

@@ -8,12 +8,15 @@ package transaction;
 import java.io.Serializable;
 
 /**
- *
+ * A class that contains all of the information inside a message between the client and server 
  * @author scott
  */
 public class Message implements MessageTypes, Serializable {
     
+    // The type of message this object is 
     int type;
+    
+    // The actual content of the message 
     Object content;
 
     public Message(int type, Object content) {

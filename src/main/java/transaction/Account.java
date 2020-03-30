@@ -6,11 +6,15 @@
 package transaction;
 
 /**
- *
+ * Object that keeps track of the information for an account
  * @author scott
  */
 public class Account {
+    
+    // The balance of the account 
     private int balance;
+    
+    // The identifier for the account
     private final int accountId;
 
     public Account(int accountId, int balance) {

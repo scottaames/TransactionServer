@@ -39,9 +39,5 @@ public class Main {
         server.start();
         client.start();
         
-        /*
-        for( Account account: TransactionServer.accountManager.getAccounts() ) {
-            System.out.println( "Balance " + account.getAccountId() + ": " + account.getBalance() ); 
-        } */ 
     }
 }
