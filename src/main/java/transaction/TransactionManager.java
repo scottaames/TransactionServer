@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class TransactionManager implements MessageTypes {
     
-    private static final ArrayList<Transaction> transactions = new ArrayList<>();;
+    private static final ArrayList<Transaction> transactions = new ArrayList<>();
     private static int transactionCounter = 0;
     ReentrantLock r_lock = new ReentrantLock();
     
