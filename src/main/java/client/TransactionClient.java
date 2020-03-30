@@ -40,19 +40,16 @@ public class TransactionClient extends Thread {
                     int balance;
                     System.out.println("\ttransaction #" + transactionId + ", $" + amount + " " + accountFrom + "->" + accountTo);
                     
-                    System.out.println( "reading" ); 
                     balance = proxy.read(accountFrom);
-                    System.out.println( "balance: " + balance ); 
+                    System.out.println( "(" + transactionId + ")" + "balance " + accountFrom + ": " + balance ); 
                     proxy.write(accountFrom, balance - amount);
-                    System.out.println( "after balance: " + proxy.read( accountFrom )); 
+                    System.out.println( "(" + transactionId + ")" + "after balance " + accountFrom + ": " + proxy.read( accountFrom )); 
                     
-                    System.out.println( "Writing" ); 
                     balance = proxy.read(accountTo);
-                    
-                    System.out.println( "writing 2" ); 
+                    System.out.println( "(" + transactionId + ")" + "balance " + accountTo + ": " + balance ); 
                     proxy.write(accountTo, balance + amount);
+                    System.out.println( "(" + transactionId + ")" + "after balance " + accountTo + ": " + proxy.read( accountTo )); 
                     
-                    System.out.println( "Closing" ); 
                     proxy.closeTransaction();
                     
                     System.out.println("transaction #" + transactionId + " finished");

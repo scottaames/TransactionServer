@@ -20,6 +20,7 @@ public class TransactionManager implements MessageTypes {
     
     private static final ArrayList<Transaction> transactions = new ArrayList<>();;
     private static int transactionCounter = 0;
+    ReentrantLock r_lock = new ReentrantLock();
     
     public TransactionManager() {
     }
@@ -29,7 +30,7 @@ public class TransactionManager implements MessageTypes {
     }
     
     public void runTransaction(Socket client) {
-        (new TransactionManagerWorker(client)).start();  
+        (new TransactionManagerWorker(client, r_lock )).start();  
     }
     
     public class TransactionManagerWorker extends Thread 
@@ -44,16 +45,17 @@ public class TransactionManager implements MessageTypes {
         Transaction transaction = null;
         Account account; 
         int accountId = 0;
-        int balance = 0;
-        ReentrantLock incrementLock = new ReentrantLock(); 
+        int balance = 0; 
         int transId; 
+        ReentrantLock r_lock; 
         
         // flag for jumping out of while loop after this transaction closed
         boolean keepGoing = true;
         
-        private TransactionManagerWorker(Socket client)
+        private TransactionManagerWorker(Socket client, ReentrantLock r_lock )
         {
             this.client = client;
+            this.r_lock = r_lock; 
             
             try 
             {
@@ -86,18 +88,16 @@ public class TransactionManager implements MessageTypes {
                     case OPEN_TRANSACTION:
                         
                         // 
-                        incrementLock.lock(); 
+                        r_lock.lock(); 
                         try {
                             transId = transactionCounter;
-                            System.out.println( transId ); 
                             transactionCounter++; 
                         } finally {
-                            incrementLock.unlock(); 
+                            r_lock.unlock(); 
                         }
                         
                         synchronized (transactions) {
                             
-                            System.out.println( "transID: " + transId );
                             transaction = new Transaction(transId);
                             transactions.add(transaction);
                         }
