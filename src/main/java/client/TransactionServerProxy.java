@@ -85,7 +85,7 @@ public class TransactionServerProxy implements MessageTypes {
     }
     
     public void write(int accountNumber, int amount) {
-        Message writeMessage = new Message(WRITE_REQUEST, accountNumber, amount); // need amount
+        Message writeMessage = new Message(WRITE_REQUEST, accountNumber + " " + amount); // need amount
         Integer balance = null;
 
         try{
